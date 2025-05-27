@@ -1,5 +1,6 @@
 package com.albuquerque.codechella;
 
+import com.albuquerque.codechella.dto.EventDTO;
 import com.albuquerque.codechella.enums.EventType;
 import com.albuquerque.codechella.model.Event;
 import org.junit.jupiter.api.Test;
@@ -37,4 +38,22 @@ class CodechellaApplicationTests {
 				});
 	}
 
+	@Test
+	void getEvent() {
+		Event event = new Event(13L, EventType.SHOW, "The Weeknd", LocalDate.of(2025, 11, 2), "Um show eletrizante ao ar livre com muitos efeitos especiais.");
+		webTestClient.get()
+				.uri("/event")
+				.exchange()
+				.expectStatus()
+				.is2xxSuccessful()
+				.expectBodyList(Event.class)
+				.value(response -> {
+					EventDTO eventDTO = new EventDTO(response.get(12));
+					assertEquals(event.getId(), eventDTO.id());
+					assertEquals(event.getType(), eventDTO.type());
+					assertEquals(event.getTitle(), eventDTO.title());
+					assertEquals(event.getDateEvent(), eventDTO.dateEvent());
+					assertEquals(event.getDescription(), eventDTO.description());
+				});
+	}
 }
