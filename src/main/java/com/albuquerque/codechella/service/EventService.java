@@ -2,6 +2,7 @@ package com.albuquerque.codechella.service;
 
 import com.albuquerque.codechella.dto.EventDTO;
 import com.albuquerque.codechella.enums.EventType;
+import com.albuquerque.codechella.external.Translator;
 import com.albuquerque.codechella.repository.EventRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -53,5 +54,11 @@ public class EventService {
 
     public Flux<EventDTO> findByType(EventType type) {
         return eventRepository.findByType(type).map(EventDTO::new);
+    }
+
+    public Mono<String> getTranslate(Long id, String language) {
+        return eventRepository.findById(id)
+                .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Id do evento não encontrado.")))
+                .flatMap(event -> Translator.get(event.getDescription(), language));
     }
 }
