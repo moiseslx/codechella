@@ -3,6 +3,7 @@ package com.albuquerque.codechella.controller;
 import com.albuquerque.codechella.dto.EventDTO;
 import com.albuquerque.codechella.enums.EventType;
 import com.albuquerque.codechella.service.EventService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -39,6 +40,7 @@ public class EventController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public Mono<EventDTO> save(@RequestBody EventDTO eventDTO) {
         return eventService.saveOrUpdate(eventDTO)
                 .doOnSuccess(sink::tryEmitNext);
